@@ -9,9 +9,9 @@ import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
 import org.springframework.boot.data.jpa.test.autoconfigure.DataJpaTest;
 import org.springframework.boot.flyway.autoconfigure.FlywayAutoConfiguration;
 import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
-import org.testcontainers.postgresql.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
+import org.testcontainers.postgresql.PostgreSQLContainer;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -33,7 +33,7 @@ class UserRepositoryTest {
     @Autowired
     private EntityManager entityManager;
 
-    @Test // Marks a method as a test that JUnit should execute
+    @Test
     void shouldSaveUser() {
         User user = new User("test@fincore.com", "hashed-password", Role.USER);
         User savedUser = userRepository.save(user);

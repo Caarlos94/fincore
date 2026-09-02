@@ -3,7 +3,6 @@ package com.carlosislas.fincore.account.api;
 import com.carlosislas.fincore.account.api.dto.AccountResponse;
 import com.carlosislas.fincore.account.api.dto.CreateAccountRequest;
 import com.carlosislas.fincore.account.application.AccountService;
-
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -28,12 +27,12 @@ public class AccountController {
     }
 
     @GetMapping
-    public List<AccountResponse> findAllAccounts(@RequestHeader("X-User-Id") Long ownerId) {
+    public List<AccountResponse> getAccounts(@RequestHeader("X-User-Id") Long ownerId) {
         return accountService.getAccountsByOwner(ownerId);
     }
 
     @GetMapping("/{accountId}")
-    public AccountResponse findAccountByAccountId(@RequestHeader("X-User-Id") Long ownerId,
+    public AccountResponse getAccountById(@RequestHeader("X-User-Id") Long ownerId,
             @PathVariable Long accountId) {
         return accountService.getAccountById(accountId, ownerId);
     }
