@@ -8,6 +8,8 @@ import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/v1/accounts")
 public class AccountController {
@@ -23,5 +25,16 @@ public class AccountController {
     public AccountResponse createAccount(@RequestHeader("X-User-Id") Long ownerId,
             @Valid @RequestBody CreateAccountRequest request) {
         return accountService.createAccount(ownerId, request);
+    }
+
+    @GetMapping
+    public List<AccountResponse> findAllAccounts(@RequestHeader("X-User-Id") Long ownerId) {
+        return accountService.getAccountsByOwner(ownerId);
+    }
+
+    @GetMapping("/{accountId}")
+    public AccountResponse findAccountByAccountId(@RequestHeader("X-User-Id") Long ownerId,
+            @PathVariable Long accountId) {
+        return accountService.getAccountById(accountId, ownerId);
     }
 }

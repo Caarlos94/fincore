@@ -28,4 +28,14 @@ public class GlobalExceptionHandler {
         problem.setTitle("Validation Failed");
         return problem;
     }
+
+    @ExceptionHandler(AccountNotFoundException.class)
+    public ProblemDetail handleAccountNotFound(AccountNotFoundException ex) {
+
+        ProblemDetail problem = ProblemDetail.forStatusAndDetail(
+                HttpStatus.NOT_FOUND, ex.getMessage()
+        );
+        problem.setTitle("Account Not Found");
+        return problem;
+    }
 }

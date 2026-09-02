@@ -7,10 +7,12 @@ import com.carlosislas.fincore.account.domain.AccountStatus;
 import com.carlosislas.fincore.account.infrastructure.AccountRepository;
 import com.carlosislas.fincore.auth.domain.User;
 import com.carlosislas.fincore.auth.infrastructure.UserRepository;
+import com.carlosislas.fincore.common.error.AccountNotFoundException;
 import com.carlosislas.fincore.common.error.UserNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -27,15 +29,40 @@ public class AccountService {
     public AccountResponse createAccount(Long ownerId, CreateAccountRequest request) {
 
         User owner = userRepository.findById(ownerId).orElseThrow(() -> new UserNotFoundException(ownerId));
-
         Account account = new Account(
                 owner, generateAccountNumber(), request.currency(), BigDecimal.ZERO, AccountStatus.ACTIVE);
-
         Account savedAccount = accountRepository.save(account);
 
         return new AccountResponse(
                 savedAccount.getId(), savedAccount.getAccountNumber(), savedAccount.getCurrency(),
                 savedAccount.getBalance(), savedAccount.getAccountStatus()
+        );
+    }
+
+    public List<AccountResponse> getAccountsByOwner(Long ownerId) {
+
+        if (!userRepository.existsById(ownerId)) {
+            throw new UserNotFoundException(ownerId);
+        }
+
+        List<Account> accounts = accountRepository.findByOwnerId(ownerId);
+        return accounts.stream().map(account -> new AccountResponse(
+                account.getId(),
+                account.getAccountNumber(),
+                account.getCurrency(),
+                account.getBalance(),
+                account.getAccountStatus()
+        )).toList();
+    }
+
+    public AccountResponse getAccountById(Long accountId, Long ownerId) {
+
+        Account account = accountRepository
+                .findByIdAndOwnerId(accountId, ownerId)
+                .orElseThrow(() -> new AccountNotFoundException(accountId));
+        return new AccountResponse(
+                account.getId(), account.getAccountNumber(), account.getCurrency(),
+                account.getBalance(), account.getAccountStatus()
         );
     }
 
